@@ -29,7 +29,7 @@ void print_board() {
     }
 }
 
-//add stone manually. In this version
+//add stone manually. 
 void add_stone(char column, int row, char current_stone) {
     int x = column - 'a';
     int y = row - 1;
@@ -46,7 +46,7 @@ bool add_stone_computer() {
         int y = rand() % SIZE;
         if (board[y][x] == EMPTY) {
             board[y][x] = current_stone;
-            current_stone = (current_stone == BLACK) ? WHITE : BLACK;
+            //current_stone = (current_stone == BLACK) ? WHITE : BLACK;
             return true;
         }
     }
