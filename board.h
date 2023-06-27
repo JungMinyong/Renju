@@ -1,6 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <stdbool.h>
+
 #define SIZE 15
 #define EMPTY '.'
 #define BLACK 'X'
