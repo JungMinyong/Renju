@@ -9,11 +9,14 @@ int main() {
     
     while(1) {
         print_board();
-        printf("Enter coordinates (e.g., h8): ");
-        scanf(" %c%d", &column, &row);
-        add_stone(column, row);
-    }
-    
+        if (current_stone == BLACK) {
+            printf("Enter coordinates (e.g., h8): ");
+            scanf(" %c%d", &column, &row);
+            add_stone(column, row);
+        } else {
+            add_stone_computer();
+        }
+    } 
     return 0;
 }
 

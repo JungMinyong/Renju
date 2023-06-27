@@ -38,3 +38,16 @@ void add_stone(char column, int row) {
     }
 }
 
+bool add_stone_computer() {
+    for (int attempts = 0; attempts < SIZE * SIZE; attempts++) {
+        int x = rand() % SIZE;
+        int y = rand() % SIZE;
+        if (board[y][x] == EMPTY) {
+            board[y][x] = current_stone;
+            current_stone = (current_stone == BLACK) ? WHITE : BLACK;
+            return true;
+        }
+    }
+
+    return false;  // no empty cells were found after a certain number of attempts
+}
