@@ -5,8 +5,10 @@ char board[SIZE][SIZE];
 char current_stone = BLACK;
 
 void initialize_board() {
-    for(int i = 0; i < SIZE; i++) {
-        for(int j = 0; j < SIZE; j++) {
+    int i;
+    int j;
+    for(i = 0; i < SIZE; i++) {
+        for(j = 0; j < SIZE; j++) {
             board[i][j] = EMPTY;
         }
     }
@@ -15,14 +17,16 @@ void initialize_board() {
 //print current board status
 void print_board() {
     printf("   ");
-    for(int i = 0; i < SIZE; i++) {
+    int i;
+    int j;
+    for(i = 0; i < SIZE; i++) {
         printf("%c ", i+'a');
     }
     printf("\n");
 
-    for(int i = 0; i < SIZE; i++) {
+    for(i = 0; i < SIZE; i++) {
         printf("%2d ", i+1);
-        for(int j = 0; j < SIZE; j++) {
+        for(j = 0; j < SIZE; j++) {
             printf("%c ", board[i][j]);
         }
         printf("\n");
@@ -41,7 +45,8 @@ void add_stone(char column, int row, char current_stone) {
 }
 
 bool add_stone_computer() {
-    for (int attempts = 0; attempts < SIZE * SIZE; attempts++) {
+    int attempts;
+    for (attempts = 0; attempts < SIZE * SIZE; attempts++) {
         int x = rand() % SIZE;
         int y = rand() % SIZE;
         if (board[y][x] == EMPTY) {
