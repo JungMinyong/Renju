@@ -12,7 +12,8 @@ int main() {
         if (current_stone == BLACK) {
             printf("Enter coordinates (e.g., h8): ");
             scanf(" %c%d", &column, &row);
-            add_stone(column, row);
+            add_stone(column, row, current_stone);
+	    current_stone = WHITE;
         } else {
             add_stone_computer();
         }

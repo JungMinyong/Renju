@@ -12,6 +12,7 @@ void initialize_board() {
     }
 }
 
+//print current board status
 void print_board() {
     printf("   ");
     for(int i = 0; i < SIZE; i++) {
@@ -28,13 +29,14 @@ void print_board() {
     }
 }
 
-void add_stone(char column, int row) {
+//add stone manually. In this version
+void add_stone(char column, int row, char current_stone) {
     int x = column - 'a';
     int y = row - 1;
     
     if (x >= 0 && x < SIZE && y >= 0 && y < SIZE && board[y][x] == EMPTY) {
         board[y][x] = current_stone;
-        current_stone = (current_stone == BLACK) ? WHITE : BLACK;
+        //current_stone = (current_stone == BLACK) ? WHITE : BLACK;
     }
 }
 
