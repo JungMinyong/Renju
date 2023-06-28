@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
+#include "winfunc.h"
 
 int main() {
     char column;
@@ -20,6 +21,11 @@ int main() {
             add_stone_computer();
         }
 	current_stone = (current_stone == BLACK) ? WHITE : BLACK; //flip the color of the stone
+        if (checkWin(current_stone)){
+	    printf("Win");
+	    break;
+
+	}
     } 
     return 0;
 }

@@ -1,5 +1,7 @@
-#include <board.h>
-int checkWin(int player) {
+#include "board.h"
+int BOARD_SIZE = SIZE;
+
+bool checkWin(char player) {
     // Check rows
     for (int row = 0; row < BOARD_SIZE; row++) {
         for (int col = 0; col <= BOARD_SIZE - 5; col++) {
@@ -11,7 +13,7 @@ int checkWin(int player) {
                     break;
             }
             if (count == 5)
-                return 1;
+                return true;
         }
     }
 
@@ -26,7 +28,7 @@ int checkWin(int player) {
                     break;
             }
             if (count == 5)
-                return 1;
+                return true;
         }
     }
 
@@ -41,7 +43,7 @@ int checkWin(int player) {
                     break;
             }
             if (count == 5)
-                return 1;
+                return true;
         }
     }
 
@@ -56,9 +58,9 @@ int checkWin(int player) {
                     break;
             }
             if (count == 5)
-                return 1;
+                return true;
         }
     }
 
-    return 0;
+    return false;
 }
