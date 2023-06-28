@@ -15,7 +15,7 @@ import torch.optim as optim
 class RenjuGame:
     def __init__(self, board_size):
         self.board_size = board_size
-        self.board = np.zeros((board_size, board_size), dtype=np.int)
+        self.board = np.zeros((board_size, board_size), dtype=np.int32)
         self.current_player = 1                                             # current_player = 1 or 2
         self.winner = None
         self.last_move_col = 0
@@ -32,30 +32,30 @@ class RenjuGame:
             self.last_move_row = row
             self.last_move_col = col
 
- def check_winner(self):
-     directions = [(0, 1), (1, 0), (1, 1), (-1, 1)]  # horizontal, vertical, diagonal, anti-diagonal
-     
-     last_row, last_col = self.last_move_row, self.last_move_col
-     last_color = self.board[last_row][last_col]
- 
-     for dr, dc in directions:
-         win = True
-         for i in range(-4, 5):
-             row = last_row + i * dr
-             col = last_col + i * dc
-             if (
-                 row < 0
-                 or row >= self.board_size
-                 or col < 0
-                 or col >= self.board_size
-                 or self.board[row][col] != last_color
-             ):
-                 win = False
-                 break
- 
-         if win:
-             self.winner = last_color
-             return
+    def check_winner(self):
+        directions = [(0, 1), (1, 0), (1, 1), (-1, 1)]  # horizontal, vertical, diagonal, anti-diagonal
+        
+        last_row, last_col = self.last_move_row, self.last_move_col
+        last_color = self.board[last_row][last_col]
+    
+        for dr, dc in directions:
+            win = True
+            for i in range(-4, 5):
+                row = last_row + i * dr
+                col = last_col + i * dc
+                if (
+                    row < 0
+                    or row >= self.board_size
+                    or col < 0
+                    or col >= self.board_size
+                    or self.board[row][col] != last_color
+                ):
+                    win = False
+                    break
+    
+            if win:
+                self.winner = last_color
+                return
  
     
 
@@ -100,7 +100,7 @@ class MCTSNode:
         best_child = None
         best_score = float('-inf')
         for child in self.children:
-            score = child.wins / child.visits + c_param * np.sqrt(2 * np.log(self.visits) / child.visits)
+            score = child.wins / child.visits + c_param * np.sqrt(2 * np.log(self.visits) / child.visits) # score using UCB1 Formula
             if score > best_score:
                 best_score = score
                 best_child = child
@@ -138,7 +138,7 @@ class PolicyNetwork(nn.Module):
         self.board_size = board_size
         self.conv1 = nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1)    # First convolutional layer with input channels=1 and output channels=32
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1)   # Second convolutional layer with input channels=32 and output channels=64
-        self.fc1 = nn.Linear(64 * (board_size ** 2 // 4), 256)               # Fully connected layer with input features=64*(board_size^2/4) and output features=256
+        self.fc1 = nn.Linear(64 * (board_size ** 2), 256)                    # Fully connected layer with input features= flatten output of conv2 which is 64*(board_size^2) and output features=256; original code was (prev)//4
         self.fc2 = nn.Linear(256, board_size ** 2)                           # Fully connected layer with input features=256 and output features=board_size^2
 
     def forward(self, x):
@@ -207,10 +207,17 @@ iterations = 10
 agent = MCTSAgent(iterations, board_size=15)
 
 num_games = 100                                 
-agent.train(num_games)
+#agent.self_play()
+#agent.train(num_games)
 
 # Testing
 game = RenjuGame(board_size=15)
+
+#state_tensor = torch.tensor(game.get_state().reshape(1, 1, 16, 16), dtype=torch.float32)
+#output = agent.policy_network(state_tensor)
+#print(output)
+##print(state_tensor)
+
 while not game.is_game_over():
     state_tensor = torch.tensor(game.get_state().reshape(1, 1, 15, 15), dtype=torch.float32)
     output = agent.policy_network(state_tensor)
@@ -219,6 +226,7 @@ while not game.is_game_over():
     probabilities = probabilities.squeeze().detach().numpy()
     valid_probabilities = probabilities.reshape(15, 15)[np.array(valid_moves)[:, 0], np.array(valid_moves)[:, 1]]
     best_move = valid_moves[np.argmax(valid_probabilities)]
+    #print(best_move)
     game.make_move(best_move[0], best_move[1])
 
 print(f"Winner: {game.winner}")
