@@ -137,7 +137,11 @@ class MCTSNode:
         if len(best_move_applicant) > 0:
             return best_move_applicant[0]
         else:
+<<<<<<< HEAD
             print('bestchild',best_score, len(self.children), best_child.state.get_state())
+=======
+            print("From get_best_move : ",len(best_move_applicant))
+>>>>>>> 6927f278506aa0660717833349c003df65169969
             return None
 
 class PolicyNetwork(nn.Module):
@@ -193,8 +197,14 @@ class MCTSAgent:
             state_tensor = torch.tensor(game.get_state().reshape(1, 1, self.board_size, self.board_size), dtype=torch.float32).to(self.device)
             states.append(state_tensor)
             move = self.get_action(game)
+            game.print_board()
             if move is None:
+<<<<<<< HEAD
                 print('move is none') #wispedia
+=======
+                print("no move")
+                print(state_tensor)
+>>>>>>> 6927f278506aa0660717833349c003df65169969
                 break
             game.make_move(move[0], move[1])
         winner = game.winner
@@ -209,6 +219,8 @@ class MCTSAgent:
         return states, labels
 
     def train(self, num_games):
+        device = torch.device('cuda')
+        self=self.to(device)
         for epoch in range(num_games):
             states, labels = self.self_play()
             if labels == 1:
@@ -217,8 +229,15 @@ class MCTSAgent:
             inputs = torch.cat(states, dim=0).to(self.device)
             targets = torch.cat(labels, dim=0).to(self.device)
             self.optimizer.zero_grad()
+<<<<<<< HEAD
             outputs = self.policy_network(inputs).to(self.device)
             loss = nn.BCEWithLogitsLoss().to(self.device)(outputs, targets)
+=======
+            outputs = self.policy_network(inputs)
+
+
+            loss = nn.BCEWithLogitsLoss()(outputs, targets)
+>>>>>>> 6927f278506aa0660717833349c003df65169969
             loss.backward()
             self.optimizer.step()
             print("Epoch : %d / %d", epoch, num_games)
@@ -230,10 +249,14 @@ agent = MCTSAgent(iterations, board_size=6)
 
 num_games = 20                                 
 #agent.self_play()
-agent.train(num_games)
+#agent.train(num_games)
 
 # Testing
 game = RenjuGame(board_size=7)
+game.make_move(1,2)
+game.make_move(2,4)
+game.print_board()
+print(len(game.get_valid_moves()))
 
 #state_tensor = torch.tensor(game.get_state().reshape(1, 1, 16, 16), dtype=torch.float32)
 #output = agent.policy_network(state_tensor)
