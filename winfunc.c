@@ -67,13 +67,16 @@ bool checkWin(char player) {
 
 bool checkDraw(){
     for (int row = 0; row < BOARD_SIZE; row++) {
+        int checker = 0;
         for (int col = 0; col <= BOARD_SIZE - 5; col++) {
-            if (board[row][col] == 0)
+            if (board[row][col] == 0){
+                checker = 1;
                 return false;
                 break;
-           
-                
+            }       
         }
+        if (checker == 1)
+            break;
     }
     return true;
 }
