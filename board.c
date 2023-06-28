@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include "board.h"
 
-char board[SIZE][SIZE];
-char current_stone = BLACK;
+int board[SIZE][SIZE];
+int current_stone = 1; //BLACK;
 
 void initialize_board() {
     int i;
     int j;
     for(i = 0; i < SIZE; i++) {
         for(j = 0; j < SIZE; j++) {
-            board[i][j] = EMPTY;
+            board[i][j] = 0; //#EMPTY;
         }
     }
 }
@@ -27,14 +27,14 @@ void print_board() {
     for(i = 0; i < SIZE; i++) {
         printf("%2d ", i+1);
         for(j = 0; j < SIZE; j++) {
-            printf("%c ", board[i][j]);
+            printf("%d ", board[i][j]);
         }
         printf("\n");
     }
 }
 
 //add stone manually. 
-void add_stone(char column, int row, char current_stone) {
+void add_stone(char column, int row, int current_stone) {
     int x = column - 'a';
     int y = row - 1;
     

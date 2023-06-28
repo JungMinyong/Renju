@@ -6,10 +6,10 @@
 int main() {
     char column;
     int row;
-    char your_color;
+    int your_color;
 
     initialize_board();
-    your_color = BLACK; //you are black stone
+    your_color = 1; //you are black stone
 
     while(1) {
         print_board();
@@ -20,12 +20,12 @@ int main() {
         } else {
             add_stone_computer();
         }
-	current_stone = (current_stone == BLACK) ? WHITE : BLACK; //flip the color of the stone
         if (checkWin(current_stone)){
-	    printf("Win");
+	    print_board();
+	    printf("%d win the game\n", current_stone);
 	    break;
-
 	}
+	current_stone = (current_stone == 1) ? 2 : 1; //flip the color of the stone
     } 
     return 0;
 }

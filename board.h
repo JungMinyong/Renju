@@ -4,16 +4,16 @@
 #include <stdbool.h>
 
 #define SIZE 7
-#define EMPTY '.'
-#define BLACK 'X'
-#define WHITE 'O'
+#define EMPTY 0
+#define BLACK 1
+#define WHITE 2
 
-extern char board[SIZE][SIZE];
-extern char current_stone;
+extern int board[SIZE][SIZE];
+extern int current_stone;
 
 void initialize_board();
 void print_board();
-void add_stone(char column, int row, char current_stone);
+void add_stone(char column, int row, int current_stone);
 bool add_stone_computer();
 
 #endif /* BOARD_H */
