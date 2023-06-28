@@ -15,6 +15,7 @@ void initialize_board();
 void print_board();
 void add_stone(char column, int row, int current_stone);
 bool add_stone_computer();
-
+bool is_valid_move();
+int get_valid_moves();
 #endif /* BOARD_H */
 

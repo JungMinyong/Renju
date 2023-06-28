@@ -9,11 +9,30 @@ void initialize_board() {
     int j;
     for(i = 0; i < SIZE; i++) {
         for(j = 0; j < SIZE; j++) {
-            board[i][j] = 0; //#EMPTY;
+            board[i][j] = EMPTY;
         }
     }
 }
 
+bool is_valid_move(row, col){
+    return board[row][col] == EMPTY;
+}
+
+int get_valid_moves(){
+    int valid_moves_row[SIZE*SIZE];
+    int valid_moves_col[SIZE*SIZE];
+    int i;
+    int j;
+    for (i = 0; i < SIZE; i++) {
+	for (j = 0; j < SIZE, j++){
+	    if (is_valid_move(i,j)){
+		valid_moves_row[i + j*SIZE] = i;
+		valid_moves_col[i + j*SIZE] = j;
+	    }
+	}
+    }
+    return valid_moves_row, valid_moves_col;
+}
 //print current board status
 void print_board() {
     printf("   ");

@@ -25,6 +25,10 @@ int main() {
 	    printf("%d win the game\n", current_stone);
 	    break;
 	}
+	int test1[SIZE];
+	int test2[SIZE];
+	test1 = get_valid_moves();
+	printf("%d \n", test1);
 	current_stone = (current_stone == 1) ? 2 : 1; //flip the color of the stone
     } 
     return 0;
