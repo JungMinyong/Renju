@@ -126,11 +126,18 @@ class MCTSNode:
         best_child = None
         best_score = float('-inf')
         for child in self.children:
-            score = child.wins / child.visits
+            if child.visits == 0:
+                score = 0
+            else:
+                score = child.wins / child.visits
             if score > best_score:
                 best_score = score
                 best_child = child
-        return best_child.state.get_valid_moves()[0]
+        best_move_applicant = best_child.state.get_valid_moves()
+        if len(best_move_applicant) > 0:
+            return best_move_applicant[0]
+        else:
+            return None
 
 class PolicyNetwork(nn.Module):
     def __init__(self, board_size):
@@ -183,17 +190,25 @@ class MCTSAgent:
             state_tensor = torch.tensor(game.get_state().reshape(1, 1, self.board_size, self.board_size), dtype=torch.float32)
             states.append(state_tensor)
             move = self.get_action(game)
+            if move is None:
+                break
             game.make_move(move[0], move[1])
         winner = game.winner
         labels = torch.zeros(len(states), self.board_size ** 2)
-        if winner != 0:
+        if winner is not None:
             for i in range(len(states)):
                 labels[i][move[0] * self.board_size + move[1]] = 1 # label : i th move is what, move represented by 1 dimension
+        else:
+            labels = 1
+
         return states, labels
 
     def train(self, num_games):
-        for _ in range(num_games):
+        for epoch in range(num_games):
             states, labels = self.self_play()
+            if labels == 1:
+                print("draw")
+                continue
             inputs = torch.cat(states, dim=0)
             targets = torch.cat(labels, dim=0)
             self.optimizer.zero_grad()
@@ -201,32 +216,34 @@ class MCTSAgent:
             loss = nn.BCEWithLogitsLoss()(outputs, targets)
             loss.backward()
             self.optimizer.step()
+            print("Epoch : %d / %d", epoch, num_games)
+
 
 # Training
-iterations = 10
-agent = MCTSAgent(iterations, board_size=15)
+iterations = 100
+agent = MCTSAgent(iterations, board_size=7)
 
-num_games = 100                                 
+num_games = 20                                 
 #agent.self_play()
-#agent.train(num_games)
+agent.train(num_games)
 
 # Testing
-game = RenjuGame(board_size=15)
+game = RenjuGame(board_size=7)
 
 #state_tensor = torch.tensor(game.get_state().reshape(1, 1, 16, 16), dtype=torch.float32)
 #output = agent.policy_network(state_tensor)
 #print(output)
 ##print(state_tensor)
 
-while not game.is_game_over():
-    state_tensor = torch.tensor(game.get_state().reshape(1, 1, 15, 15), dtype=torch.float32)
-    output = agent.policy_network(state_tensor)
-    probabilities = torch.sigmoid(output)
-    valid_moves = game.get_valid_moves()
-    probabilities = probabilities.squeeze().detach().numpy()
-    valid_probabilities = probabilities.reshape(15, 15)[np.array(valid_moves)[:, 0], np.array(valid_moves)[:, 1]]
-    best_move = valid_moves[np.argmax(valid_probabilities)]
-    #print(best_move)
-    game.make_move(best_move[0], best_move[1])
+#while not game.is_game_over():
+    #state_tensor = torch.tensor(game.get_state().reshape(1, 1, 15, 15), dtype=torch.float32)
+    #output = agent.policy_network(state_tensor)
+    #probabilities = torch.sigmoid(output)
+    #valid_moves = game.get_valid_moves()
+    #probabilities = probabilities.squeeze().detach().numpy()
+    #valid_probabilities = probabilities.reshape(15, 15)[np.array(valid_moves)[:, 0], np.array(valid_moves)[:, 1]]
+    #best_move = valid_moves[np.argmax(valid_probabilities)]
+    ##print(best_move)
+    #game.make_move(best_move[0], best_move[1])
 
-print(f"Winner: {game.winner}")
+#print(f"Winner: {game.winner}")
