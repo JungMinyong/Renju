@@ -64,3 +64,16 @@ bool checkWin(char player) {
 
     return false;
 }
+
+bool checkDraw(){
+    for (int row = 0; row < BOARD_SIZE; row++) {
+        for (int col = 0; col <= BOARD_SIZE - 5; col++) {
+            if (board[row][col] == 0)
+                return false;
+                break;
+           
+                
+        }
+    }
+    return true;
+}
