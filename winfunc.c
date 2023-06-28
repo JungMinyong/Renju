@@ -1,3 +1,4 @@
+#include <board.h>
 int checkWin(int player) {
     // Check rows
     for (int row = 0; row < BOARD_SIZE; row++) {

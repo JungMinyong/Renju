@@ -21,6 +21,7 @@ int main() {
             add_stone_computer(); // Call the function defined in ai.cu
         }
         current_stone = (current_stone == BLACK) ? WHITE : BLACK; //flip the color of the stone
+        //winfunc() //check board status
     }
     return 0;
 }
