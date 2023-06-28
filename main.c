@@ -22,7 +22,7 @@ int main() {
         } else {
             add_stone_computer(&state);
         }
-        if (checkWin(&state)){
+        if (checkWin(&state, state.current_stone)){
             print_board(&state);
             printf("%d win the game\n", state.current_stone);
             break;

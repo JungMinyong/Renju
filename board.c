@@ -10,6 +10,7 @@ void initialize_board(GameState *state) {
             state->board[i][j] = EMPTY;
         }
     }
+    state->current_stone = BLACK;
     // initialize other fields of GameState...
 }
 

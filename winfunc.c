@@ -1,13 +1,13 @@
 #include "board.h"
 int BOARD_SIZE = SIZE;
 
-bool checkWin(char player) {
+bool checkWin(GameState *state, int player) {
     // Check rows
     for (int row = 0; row < BOARD_SIZE; row++) {
         for (int col = 0; col <= BOARD_SIZE - 5; col++) {
             int count = 0;
             for (int i = 0; i < 5; i++) {
-                if (board[row][col + i] == player)
+                if (state->board[row][col + i] == player)
                     count++;
                 else
                     break;
@@ -22,7 +22,7 @@ bool checkWin(char player) {
         for (int row = 0; row <= BOARD_SIZE - 5; row++) {
             int count = 0;
             for (int i = 0; i < 5; i++) {
-                if (board[row + i][col] == player)
+                if (state->board[row + i][col] == player)
                     count++;
                 else
                     break;
@@ -37,7 +37,7 @@ bool checkWin(char player) {
         for (int col = 0; col <= BOARD_SIZE - 5; col++) {
             int count = 0;
             for (int i = 0; i < 5; i++) {
-                if (board[row + i][col + i] == player)
+                if (state->board[row + i][col + i] == player)
                     count++;
                 else
                     break;
@@ -52,7 +52,7 @@ bool checkWin(char player) {
         for (int col = BOARD_SIZE - 1; col >= 4; col--) {
             int count = 0;
             for (int i = 0; i < 5; i++) {
-                if (board[row + i][col - i] == player)
+                if (state->board[row + i][col - i] == player)
                     count++;
                 else
                     break;
@@ -65,18 +65,14 @@ bool checkWin(char player) {
     return false;
 }
 
-bool checkDraw(){
+bool checkDraw(GameState *state){
     for (int row = 0; row < BOARD_SIZE; row++) {
-        int checker = 0;
-        for (int col = 0; col <= BOARD_SIZE - 5; col++) {
-            if (board[row][col] == 0){
-                checker = 1;
+        for (int col = 0; col < BOARD_SIZE; col++) {
+            if (state->board[row][col] == 0){
                 return false;
-                break;
             }       
         }
-        if (checker == 1)
-            break;
     }
     return true;
 }
+
