@@ -4,76 +4,73 @@
 int board[SIZE][SIZE];
 int current_stone = 1; //BLACK;
 
-void initialize_board() {
-    int i;
-    int j;
-    for(i = 0; i < SIZE; i++) {
-        for(j = 0; j < SIZE; j++) {
-            board[i][j] = EMPTY;
+void initialize_board(GameState *state) {
+    for(int i = 0; i < SIZE; i++) {
+        for(int j = 0; j < SIZE; j++) {
+            state->board[i][j] = EMPTY;
         }
     }
+    // initialize other fields of GameState...
 }
 
-bool is_valid_move(row, col){
-    return board[row][col] == EMPTY;
-}
 
-int get_valid_moves(){
-    int valid_moves_row[SIZE*SIZE];
-    int valid_moves_col[SIZE*SIZE];
-    int i;
-    int j;
-    for (i = 0; i < SIZE; i++) {
-	for (j = 0; j < SIZE, j++){
-	    if (is_valid_move(i,j)){
-		valid_moves_row[i + j*SIZE] = i;
-		valid_moves_col[i + j*SIZE] = j;
-	    }
-	}
-    }
-    return valid_moves_row; //, valid_moves_col;
-}
 //print current board status
-void print_board() {
+bool is_valid_move(GameState *state, int row, int col){
+    bool status = state->board[row][col] == EMPTY;
+    return status;
+}
+
+ValidMoves get_valid_moves(GameState *state){
+    ValidMoves valid_moves = {0};
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++){
+            if (is_valid_move(state, i, j)){
+                valid_moves.rows[valid_moves.count] = i;
+                valid_moves.cols[valid_moves.count] = j;
+                valid_moves.count++;
+            }
+        }
+    }
+    return valid_moves;
+}
+
+void print_board(GameState *state) {
     printf("   ");
-    int i;
-    int j;
-    for(i = 0; i < SIZE; i++) {
+    for(int i = 0; i < SIZE; i++) {
         printf("%c ", i+'a');
     }
     printf("\n");
 
-    for(i = 0; i < SIZE; i++) {
+    for(int i = 0; i < SIZE; i++) {
         printf("%2d ", i+1);
-        for(j = 0; j < SIZE; j++) {
-            printf("%d ", board[i][j]);
+        for(int j = 0; j < SIZE; j++) {
+            printf("%d ", state->board[i][j]);
         }
         printf("\n");
     }
 }
 
-//add stone manually. 
-void add_stone(char column, int row, int current_stone) {
+void add_stone(GameState *state, char column, int row) {
     int x = column - 'a';
     int y = row - 1;
-    
-    if (x >= 0 && x < SIZE && y >= 0 && y < SIZE && board[y][x] == EMPTY) {
-        board[y][x] = current_stone;
-        //current_stone = (current_stone == BLACK) ? WHITE : BLACK;
+
+    if (x >= 0 && x < SIZE && y >= 0 && y < SIZE && state->board[y][x] == EMPTY) {
+        state->board[y][x] = state->current_stone;
+        // state->current_stone = (state->current_stone == BLACK) ? WHITE : BLACK;
     }
 }
 
-bool add_stone_computer() {
-    int attempts;
-    for (attempts = 0; attempts < SIZE * SIZE; attempts++) {
+bool add_stone_computer(GameState *state) {
+    for (int attempts = 0; attempts < SIZE * SIZE; attempts++) {
         int x = rand() % SIZE;
         int y = rand() % SIZE;
-        if (board[y][x] == EMPTY) {
-            board[y][x] = current_stone;
-            //current_stone = (current_stone == BLACK) ? WHITE : BLACK;
+        if (state->board[y][x] == EMPTY) {
+            state->board[y][x] = state->current_stone;
+            // state->current_stone = (state->current_stone == BLACK) ? WHITE : BLACK;
             return true;
         }
     }
 
     return false;  // no empty cells were found after a certain number of attempts
 }
+

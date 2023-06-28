@@ -11,11 +11,29 @@
 extern int board[SIZE][SIZE];
 extern int current_stone;
 
+typedef struct {
+    int row;
+    int col;
+} Move;
+
+typedef struct {
+    int current_stone;
+    int last_move;
+    int board[SIZE][SIZE];
+} GameState;
+
+typedef struct {
+    int count;
+    int rows[SIZE*SIZE];
+    int cols[SIZE*SIZE];
+} ValidMoves;
+
 void initialize_board();
 void print_board();
-void add_stone(char column, int row, int current_stone);
+void add_stone(GameState *state, char column, int row);
+
 bool add_stone_computer();
 bool is_valid_move();
-int get_valid_moves();
+ValidMoves get_valid_moves();
 #endif /* BOARD_H */
 

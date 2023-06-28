@@ -8,29 +8,27 @@ int main() {
     int row;
     int your_color;
 
-    initialize_board();
+    GameState state;
+    initialize_board(&state);
     your_color = 1; //you are black stone
 
+
     while(1) {
-        print_board();
-        if (current_stone == your_color) {
+        print_board(&state);
+        if (state.current_stone == your_color) {
             printf("Enter coordinates (e.g., h8): ");
             scanf(" %c%d", &column, &row);
-            add_stone(column, row, current_stone);
+            add_stone(&state, column, row);
         } else {
-            add_stone_computer();
+            add_stone_computer(&state);
         }
-        if (checkWin(current_stone)){
-	    print_board();
-	    printf("%d win the game\n", current_stone);
-	    break;
-	}
-	int test1[SIZE];
-	int test2[SIZE];
-	test1 = get_valid_moves();
-	printf("%d \n", &test1);
-	current_stone = (current_stone == 1) ? 2 : 1; //flip the color of the stone
-    } 
+        if (checkWin(&state)){
+            print_board(&state);
+            printf("%d win the game\n", state.current_stone);
+            break;
+        }
+        //get_valid_moves() would need a different implementation if you intend to use it, as the current version returns an array, which is not valid in C.
+        state.current_stone = (state.current_stone == BLACK) ? WHITE : BLACK; //flip the color of the stone
+    }
     return 0;
 }
-
