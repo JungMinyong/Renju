@@ -31,7 +31,7 @@ int get_valid_moves(){
 	    }
 	}
     }
-    return valid_moves_row, valid_moves_col;
+    return valid_moves_row; //, valid_moves_col;
 }
 //print current board status
 void print_board() {
