@@ -20,12 +20,12 @@ int simulate_game(GameState state) {
 }
 
 
-int monte_carlo_tree_search(GameState original_state, int MAX_SEARCH) { // now takes GameState instead of GameState *
+int monte_carlo_tree_search(GameState original_state, int MAX_SEARCH, int *wins, int *visits) { // now takes GameState instead of GameState *
     GameState state = original_state;
     int num_actions = get_valid_move_count(&state);
     int current_stone = state.current_stone;
-    int wins[num_actions];
-    int visits[num_actions];
+    //int wins[num_actions];
+    //int visits[num_actions];
     for (int i = 0; i < num_actions; i++) {
         wins[i] = 0;
         visits[i] = 0;
@@ -51,6 +51,5 @@ int monte_carlo_tree_search(GameState original_state, int MAX_SEARCH) { // now t
         }
     }
 
-    return best_action, wins, visits;
 }
 

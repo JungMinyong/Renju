@@ -5,6 +5,8 @@
 #include "mcts_mpi.h"
 #include <mpi.h>
 
+#define TERMINATE_TAG 0
+
 void slave(){
 
 }
@@ -71,7 +73,9 @@ int main(int argc, char *argv[]) {
                 // Terminate slaves
                 for (int i = 1; i < n_proc; i++) {
                     int terminate = 1;
-                    MPI_Send(&terminate, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+		    for (int i = 1; i < n_proc; i++) {
+ 			   MPI_Send(&terminate, 1, MPI_INT, i, TERMINATE_TAG, MPI_COMM_WORLD);
+			}
                 } 
                 break;
             }
@@ -111,12 +115,9 @@ int main(int argc, char *argv[]) {
                     int action;
                     int wins[possible_action_num];
                     int visits[possible_action_num];
-                    monte_carlo_tree_search(state, max_search); // Update visits directly without redeclaration
-        
-                    int result, size;
-                    result = calculate_result(visits, size); // assuming the function calculate_result is defined elsewhere
+                    monte_carlo_tree_search(state, max_search, &wins, &visits); // Update visits directly without redeclaration
                     
-                    MPI_Send(&result, 1, MPI_INT, 0, 1, MPI_COMM_WORLD);
+                    MPI_Send(&wins, 1, MPI_INT, 0, 1, MPI_COMM_WORLD);
                 }
             }
         }
