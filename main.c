@@ -14,8 +14,8 @@ int main() {
 
 
     while(1) {
-        print_board(&state);
         if (state.current_stone == your_color) {
+            print_board(&state);
             printf("Enter coordinates (e.g., h8): ");
             scanf(" %c%d", &column, &row);
             add_stone(&state, column, row);
