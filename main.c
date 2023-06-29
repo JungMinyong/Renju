@@ -22,10 +22,10 @@ int main() {
             add_stone(&state, column, row);
 	    state.current_stone = (state.current_stone == BLACK) ? WHITE : BLACK;
         } else {
-            int max_search = 100000;
+            int max_search = 10000;
 	    int best_action = monte_carlo_tree_search(state, max_search);
 	    print_board(&state);
-	    make_move(&state, best_action); //여기서 color가 안 바뀜
+	    make_move(&state, best_action);
 	    //add_stone_computer(&state);
         }
         if (checkWin(&state)){

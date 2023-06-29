@@ -46,7 +46,12 @@ void print_board(GameState *state) {
     for(int i = 0; i < SIZE; i++) {
         printf("%2d ", i+1);
         for(int j = 0; j < SIZE; j++) {
+            if (state->board[i][j] == EMPTY){
+                printf(". ");
+                }
+            else{
             printf("%d ", state->board[i][j]);
+                }
         }
         printf("\n");
     }
