@@ -27,6 +27,11 @@ int main() {
             printf("%d win the game\n", state.current_stone);
             break;
         }
+        if (checkDraw(&state)){
+            print_board(&state);
+            printf("There is no valid place - Draw");
+            break;
+        }
         //get_valid_moves() would need a different implementation if you intend to use it, as the current version returns an array, which is not valid in C.
         state.current_stone = (state.current_stone == BLACK) ? WHITE : BLACK; //flip the color of the stone
     }
