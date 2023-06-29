@@ -49,9 +49,9 @@ int main(int argc, char *argv[]) {
                 make_move(&state, action); //best_action = action
                 //add_stone_computer(&state); 
             }
-            if (checkWin(&state)){
+            if (checkWinDebug(&state)){
                 print_board(&state);
-                printf("%d win the game\n", state.current_stone);
+                printf("%d win the game\n", 3 - state.current_stone);
 
                 for (int i = 1; i < n_proc; i++) {
                     int terminate = 1;

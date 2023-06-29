@@ -1,6 +1,7 @@
 #include "board.h"
 
 
+bool checkWinDebug(GameState *state);
 bool checkWin(GameState *state);
 bool checkDraw(GameState *state);
 
