@@ -1,3 +1,6 @@
+#include "board.h"
+
+
 bool checkWin(GameState *state);
 bool checkDraw(GameState *state);
 

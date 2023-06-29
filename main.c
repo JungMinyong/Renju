@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "board.h"
 #include "winfunc.h"
+#include "mcts.h"
 
 int main() {
     char column;
@@ -20,7 +21,9 @@ int main() {
             scanf(" %c%d", &column, &row);
             add_stone(&state, column, row);
         } else {
-            add_stone_computer(&state);
+            int best_action = monte_carlo_tree_search(&state);
+	    make_move(&state, best_action);
+	    //add_stone_computer(&state);
         }
         if (checkWin(&state)){
             print_board(&state);

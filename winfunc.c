@@ -1,4 +1,5 @@
 #include "board.h"
+
 int BOARD_SIZE = SIZE;
 
 bool checkWin(GameState *state) {
@@ -77,13 +78,13 @@ bool checkDraw(GameState *state){
     return true;
 }
 
-
+ 
 int get_winner(GameState* state) {
-    return checkWin(state->current_stone) ? state->current_stone : -1;
+    return checkWin(state) ? state->current_stone : -1;
 }
 
 int is_game_over(GameState* state) {
-    return checkWin(state->current_stone) || checkDraw(state->board);
+    return checkWin(state) || checkDraw(state);
 }
 
 
