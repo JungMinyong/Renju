@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#define SIZE 7
+#define SIZE 5
 #define EMPTY 0
 #define BLACK 1
 #define WHITE 2

@@ -20,9 +20,12 @@ int main() {
             printf("Enter coordinates (e.g., h8): ");
             scanf(" %c%d", &column, &row);
             add_stone(&state, column, row);
+	    state.current_stone = (state.current_stone == BLACK) ? WHITE : BLACK;
         } else {
-            int best_action = monte_carlo_tree_search(&state);
-	    make_move(&state, best_action);
+            int max_search = 100000;
+	    int best_action = monte_carlo_tree_search(state, max_search);
+	    print_board(&state);
+	    make_move(&state, best_action); //여기서 color가 안 바뀜
 	    //add_stone_computer(&state);
         }
         if (checkWin(&state)){
@@ -36,7 +39,6 @@ int main() {
             break;
         }
         //get_valid_moves() would need a different implementation if you intend to use it, as the current version returns an array, which is not valid in C.
-        state.current_stone = (state.current_stone == BLACK) ? WHITE : BLACK; //flip the color of the stone
     }
     return 0;
 }

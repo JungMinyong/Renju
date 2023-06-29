@@ -102,5 +102,12 @@ GameState make_move(GameState* state, int action) {
     return *state;
 }
 
-
+GameState make_move_copy(GameState state, int action) {
+    ValidMoves valid_moves = get_valid_moves(&state);
+    int row = valid_moves.rows[action];
+    int col = valid_moves.cols[action];
+    add_stone(&state, col + 'a', row + 1);
+    state.current_stone = (state.current_stone == BLACK) ? WHITE : BLACK;
+    return state;
+}
 
