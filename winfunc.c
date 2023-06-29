@@ -1,8 +1,9 @@
 #include "board.h"
 int BOARD_SIZE = SIZE;
 
-bool checkWin(GameState *state, int player) {
-    // Check rows
+bool checkWin(GameState *state) {
+    int player = state->current_stone;
+	// Check rows
     for (int row = 0; row < BOARD_SIZE; row++) {
         for (int col = 0; col <= BOARD_SIZE - 5; col++) {
             int count = 0;
@@ -75,4 +76,30 @@ bool checkDraw(GameState *state){
     }
     return true;
 }
+
+
+int get_winner(GameState* state) {
+    return checkWin(state->current_stone) ? state->current_stone : -1;
+}
+
+int is_game_over(GameState* state) {
+    return checkWin(state->current_stone) || checkDraw(state->board);
+}
+
+
+int get_valid_move_count(GameState* state) {
+    return get_valid_moves(state).count;
+}
+
+
+GameState make_move(GameState* state, int action) {
+    ValidMoves valid_moves = get_valid_moves(state);
+    int row = valid_moves.rows[action];
+    int col = valid_moves.cols[action];
+    add_stone(state, col + 'a', row + 1);
+    state->current_stone = (state->current_stone == BLACK) ? WHITE : BLACK;
+    return *state;
+}
+
+
 
