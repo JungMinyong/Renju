@@ -31,7 +31,6 @@ int** monte_carlo_tree_search(GameState original_state, int MAX_SEARCH) { // now
         wins[i] = 0;
         visits[i] = 0;
     }
-    printf("After initialize wins and visits\n");
 
     for (int i = 0; i < MAX_SEARCH; i++) {
         int action = rand() % num_actions;
@@ -39,22 +38,16 @@ int** monte_carlo_tree_search(GameState original_state, int MAX_SEARCH) { // now
 	    int winner = simulate_game(new_state);
         visits[action]++;
         if (current_stone == winner) { // accessing the value directly
-	    wins[action]++;
-        }
-        if (i%100 == 0){
-            printf("assigning visits at loop %d\n", i);
+	        wins[action]++;
         }
     }
-    printf("Before malloc in mcts!\n");
     int** results = malloc(2*sizeof(int*));
-    printf("after malloc in mcts\n");
+    for (int i = 0; i < 2; i++) {
+        results[i] = malloc(sizeof(int));
+    }
     results[0] = wins;
     results[1] = visits;
-    printf("after assign result in mcts!\n");
-    printf("%d\n", results[0][2]);
-
-
-
+    //printf("%d\n", results[0][2]);
     return results;
 }
 
