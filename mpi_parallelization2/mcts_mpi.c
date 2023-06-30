@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 #include "winfunc.h"
 #include "board.h"
 
@@ -22,7 +23,7 @@ int simulate_game(GameState state) {
 
 
 
-void monte_carlo_tree_search(GameState original_state, int MAX_SEARCH, int* wins, int* visits) {
+void monte_carlo_tree_search(GameState original_state, int MAX_SEARCH, int* wins, int* visits, int seed) {
     GameState state = original_state;
     int num_actions = get_valid_move_count(&state);
     int current_stone = state.current_stone;
@@ -31,7 +32,7 @@ void monte_carlo_tree_search(GameState original_state, int MAX_SEARCH, int* wins
         wins[i] = 0;
         visits[i] = 0;
     }
-
+    srand(time(0)*seed);
     for (int i = 0; i < MAX_SEARCH; i++) {
         int action = rand() % num_actions;
         GameState new_state = make_move_copy(state, action);

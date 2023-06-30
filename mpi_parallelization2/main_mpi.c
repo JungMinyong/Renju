@@ -65,21 +65,26 @@ int main(int argc, char *argv[]) {
 
                     printf("master recieve from source :%d, tag :%d\n Recived result was %d\n", status.MPI_SOURCE, status.MPI_TAG, slave_visits[2]);
                     
+
                     for (int j = 0; j < possible_action_num; j++) {
+                        int test_search = 0;
+                        for (int i = 0; i < possible_action_num; i++) {
+                            test_search += slave_visits[i];
+                            }
+                        printf("visits search is: %d \n", test_search);
+                
+                        int win_search = 0;
+                        for (int i = 0; i < possible_action_num; i++) {
+                            win_search += slave_wins[i];
+                            }
+                        printf("wins search is: %d \n", win_search);
+                        
                         wins[j] += slave_wins[j];
                         visits[j] += slave_visits[j];
                         }
                      
                  }
                    
-                //assert mpi communication
-                int test_search = 0;
-                for (int i = 0; i < possible_action_num; i++) {
-                    test_search += visits[i];
-                    }
-                printf("full search is: %d \n", test_search);
-                
-               
                 // impelement wins/visits to find best action
                 
                 int action = 0;
@@ -149,7 +154,7 @@ int main(int argc, char *argv[]) {
             //int visits_chunk = NULL;
 
             printf("max search %d \n", max_search);
-            monte_carlo_tree_search(state, max_search, wins_chunk, visits_chunk);           
+            monte_carlo_tree_search(state, max_search, wins_chunk, visits_chunk, rank);           
             //printf("Before sending : %d\n", visits_chunk[2]);
             //MPI_Send(&(result[0][0]), 2*possible_action_num, MPI_INT, 0, 34, MPI_COMM_WORLD);
             //MPI_Send(&(result[1][0]), 2*possible_action_num, MPI_INT, 0, 33, MPI_COMM_WORLD);
