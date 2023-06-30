@@ -20,12 +20,12 @@ int simulate_game(GameState state) {
 }
 
 
-int** monte_carlo_tree_search(GameState original_state, int MAX_SEARCH) { // now takes GameState instead of GameState *
+
+
+void monte_carlo_tree_search(GameState original_state, int MAX_SEARCH, int* wins, int* visits) {
     GameState state = original_state;
     int num_actions = get_valid_move_count(&state);
     int current_stone = state.current_stone;
-    int* wins = malloc(num_actions * sizeof(int));
-    int* visits = malloc(num_actions * sizeof(int));
     
     for (int i = 0; i < num_actions; i++) {
         wins[i] = 0;
@@ -35,19 +35,10 @@ int** monte_carlo_tree_search(GameState original_state, int MAX_SEARCH) { // now
     for (int i = 0; i < MAX_SEARCH; i++) {
         int action = rand() % num_actions;
         GameState new_state = make_move_copy(state, action);
-	    int winner = simulate_game(new_state);
+        int winner = simulate_game(new_state);
         visits[action]++;
-        if (current_stone == winner) { // accessing the value directly
-	        wins[action]++;
+        if (current_stone == winner) { 
+            wins[action]++;
         }
     }
-    int** results = malloc(2*sizeof(int*));
-    for (int i = 0; i < 2; i++) {
-        results[i] = malloc(sizeof(int));
-    }
-    results[0] = wins;
-    results[1] = visits;
-    //printf("%d\n", results[0][2]);
-    return results;
 }
-
