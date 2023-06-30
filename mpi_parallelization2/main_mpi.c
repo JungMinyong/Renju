@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
                     //MPI_Barrier(MPI_COMM_WORLD);
                     terminate = 0;
 
-                    MPI_Send(&terminate, 1, MPI_INT, i, TERMINATE_TAG, MPI_COMM_WORLD);
+                    //MPI_Send(&terminate, 1, MPI_INT, i, TERMINATE_TAG, MPI_COMM_WORLD);
                     MPI_Send(&state, sizeof(GameState), MPI_BYTE, i, 0, MPI_COMM_WORLD);
                     MPI_Send(&max_search, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
                     MPI_Status status;
@@ -62,28 +62,23 @@ int main(int argc, char *argv[]) {
                       
                     MPI_Recv(slave_wins, possible_action_num, MPI_INT, i, 34, MPI_COMM_WORLD, &status);
                     MPI_Recv(slave_visits, possible_action_num, MPI_INT, i, 33, MPI_COMM_WORLD, &status);
-
-                    printf("master recieve from source :%d, tag :%d\n Recived result was %d\n", status.MPI_SOURCE, status.MPI_TAG, slave_visits[2]);
+                    printf("Master receive from Slave%d\n", status.MPI_SOURCE);
+                    //printf("master recieve from source :%d, tag :%d\n Recived result was %d\n", status.MPI_SOURCE, status.MPI_TAG, slave_visits[2]);
                     
 
                     for (int j = 0; j < possible_action_num; j++) {
-                        int test_search = 0;
-                        for (int i = 0; i < possible_action_num; i++) {
-                            test_search += slave_visits[i];
-                            }
-                        printf("visits search is: %d \n", test_search);
-                
-                        int win_search = 0;
-                        for (int i = 0; i < possible_action_num; i++) {
-                            win_search += slave_wins[i];
-                            }
-                        printf("wins search is: %d \n", win_search);
-                        
                         wins[j] += slave_wins[j];
                         visits[j] += slave_visits[j];
                         }
                      
                  }
+                int test_search = 0;
+                for (int i = 0; i < possible_action_num; i++) {
+                    test_search += visits[i];
+                    }
+                printf(" Full search is: %d \n", test_search);
+                
+
                    
                 // impelement wins/visits to find best action
                 
@@ -99,7 +94,7 @@ int main(int argc, char *argv[]) {
                         action = k;
                     }
                 }
-                printf("wins : %d , visits : %d", wins[action], visits[action]);
+                printf("wins : %d , visits : %d\n", wins[action], visits[action]);
                 printf("this move has score = %f \n", score);
 
                 //free(slave_result[0]);
@@ -140,7 +135,7 @@ int main(int argc, char *argv[]) {
             MPI_Status status;
             //printf("node %d listening\n", rank);
             MPI_Recv(&terminate, 1, MPI_INT, 0, TERMINATE_TAG, MPI_COMM_WORLD, &status);
-            if (status.MPI_TAG == 1){
+            if (status.MPI_TAG == TERMINATE_TAG){
                 printf("break slave, %d \n", rank);
                 break;
             }
@@ -153,14 +148,14 @@ int main(int argc, char *argv[]) {
             int *visits_chunk = malloc(possible_action_num * sizeof(int));            //int wins_chunk = NULL;
             //int visits_chunk = NULL;
 
-            printf("max search %d \n", max_search);
+            //printf("max search %d \n", max_search);
             monte_carlo_tree_search(state, max_search, wins_chunk, visits_chunk, rank);           
             //printf("Before sending : %d\n", visits_chunk[2]);
             //MPI_Send(&(result[0][0]), 2*possible_action_num, MPI_INT, 0, 34, MPI_COMM_WORLD);
             //MPI_Send(&(result[1][0]), 2*possible_action_num, MPI_INT, 0, 33, MPI_COMM_WORLD);
             MPI_Send(wins_chunk, possible_action_num, MPI_INT, 0, 34, MPI_COMM_WORLD);
             MPI_Send(visits_chunk, possible_action_num, MPI_INT, 0, 33, MPI_COMM_WORLD);
-
+            //printf("Slave%d send the result\n",rank);
             free(wins_chunk);
             free(visits_chunk);
             
