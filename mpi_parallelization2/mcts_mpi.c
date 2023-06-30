@@ -32,9 +32,9 @@ void monte_carlo_tree_search(GameState original_state, int MAX_SEARCH, int* wins
         wins[i] = 0;
         visits[i] = 0;
     }
-    srand(seed);
+    //srand(seed);
     for (int i = 0; i < MAX_SEARCH; i++) {
-        int action = rand() % num_actions;
+        int action = rand_r(&seed) % num_actions;
         GameState new_state = make_move_copy(state, action);
         int winner = simulate_game(new_state);
         visits[action]++;

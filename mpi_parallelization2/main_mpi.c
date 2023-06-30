@@ -4,7 +4,7 @@
 #include "winfunc.h"
 #include "mcts_mpi.h"
 #include <mpi.h>
-
+#include <time.h>
 int TERMINATE_TAG = 77;
 int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
@@ -67,18 +67,6 @@ int main(int argc, char *argv[]) {
                     
 
                     for (int j = 0; j < possible_action_num; j++) {
-                        int test_search = 0;
-                        for (int i = 0; i < possible_action_num; i++) {
-                            test_search += slave_visits[i];
-                            }
-                        printf("visits search is: %d \n", test_search);
-                
-                        int win_search = 0;
-                        for (int i = 0; i < possible_action_num; i++) {
-                            win_search += slave_wins[i];
-                            }
-                        printf("wins search is: %d \n", win_search);
-                        
                         wins[j] += slave_wins[j];
                         visits[j] += slave_visits[j];
                         }
@@ -154,7 +142,8 @@ int main(int argc, char *argv[]) {
             //int visits_chunk = NULL;
 
             printf("max search %d \n", max_search);
-            monte_carlo_tree_search(state, max_search, wins_chunk, visits_chunk, rank);           
+	    unsigned int seed = time(NULL) + rank; // Each thread needs its own seed
+            monte_carlo_tree_search(state, max_search, wins_chunk, visits_chunk, seed);           
             //printf("Before sending : %d\n", visits_chunk[2]);
             //MPI_Send(&(result[0][0]), 2*possible_action_num, MPI_INT, 0, 34, MPI_COMM_WORLD);
             //MPI_Send(&(result[1][0]), 2*possible_action_num, MPI_INT, 0, 33, MPI_COMM_WORLD);
