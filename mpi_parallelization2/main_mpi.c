@@ -41,6 +41,10 @@ int main(int argc, char *argv[]) {
                 int possible_action_num = get_valid_move_count(&state);
                 int wins[possible_action_num], visits[possible_action_num];
                 
+                for (int i = 0; i < possible_action_num; i++) {
+                    wins[i] = 0;
+                    visits[i] = 0;
+                    }
                 
                 for (int i = 1; i < n_proc; i++) {
                     //MPI_Barrier(MPI_COMM_WORLD);
@@ -52,7 +56,6 @@ int main(int argc, char *argv[]) {
                     MPI_Status status;
                 }
                     
-                printf("master, finish sending");
                  for (int i = 1; i < n_proc; i++){
                     int slave_wins[possible_action_num];
                     int slave_visits[possible_action_num];
@@ -69,25 +72,30 @@ int main(int argc, char *argv[]) {
                      
                  }
                    
-                    //MPI_Barrier(MPI_COMM_WORLD);
-                    //MPI_Recv(&(slave_result[0][0]), 2*possible_action_num, MPI_INT, i, 34, MPI_COMM_WORLD, &status);
-                    //MPI_Recv(&(slave_result[1][0]), 2*possible_action_num, MPI_INT, i, 33, MPI_COMM_WORLD, &status);
-                    
+                //assert mpi communication
+                int test_search = 0;
+                for (int i = 0; i < possible_action_num; i++) {
+                    test_search += visits[i];
+                    }
+                printf("full search is: %d \n", test_search);
+                
                
                 // impelement wins/visits to find best action
                 
-                int action = 0; int score = 0;
+                int action = 0;
+                double score = 0.0;
+                
                 for (int k =1; k < possible_action_num; k++){
                     if (visits[k] == 0){
                         continue;
                     }
-                    if (wins[k]/visits[k]>score){
-                        score = wins[k]/visits[k];
+                    if (1.0 * wins[k]/visits[k]>score){
+                        score = 1.0 * wins[k]/visits[k];
                         action = k;
-                    }    
+                    }
                 }
                 printf("wins : %d , visits : %d", wins[action], visits[action]);
-                printf("this move has score = %d\n", score);
+                printf("this move has score = %f \n", score);
 
                 //free(slave_result[0]);
                 //free(slave_result[1]);
@@ -121,7 +129,6 @@ int main(int argc, char *argv[]) {
             continue;
         }
         else {  // Slave processes
-            printf("slave start %d \n", rank);
             GameState state;
             int max_search;
             //int dummy;
@@ -129,7 +136,7 @@ int main(int argc, char *argv[]) {
             //printf("node %d listening\n", rank);
             MPI_Recv(&terminate, 1, MPI_INT, 0, TERMINATE_TAG, MPI_COMM_WORLD, &status);
             if (status.MPI_TAG == 1){
-                printf("break slave");
+                printf("break slave, %d \n", rank);
                 break;
             }
             MPI_Recv(&state, sizeof(GameState), MPI_BYTE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -141,9 +148,9 @@ int main(int argc, char *argv[]) {
             int *visits_chunk = malloc(possible_action_num * sizeof(int));            //int wins_chunk = NULL;
             //int visits_chunk = NULL;
 
-            printf("possible_action_num %d \n", possible_action_num);
+            printf("max search %d \n", max_search);
             monte_carlo_tree_search(state, max_search, wins_chunk, visits_chunk);           
-            printf("Before sending : %d\n", visits_chunk[2]);
+            //printf("Before sending : %d\n", visits_chunk[2]);
             //MPI_Send(&(result[0][0]), 2*possible_action_num, MPI_INT, 0, 34, MPI_COMM_WORLD);
             //MPI_Send(&(result[1][0]), 2*possible_action_num, MPI_INT, 0, 33, MPI_COMM_WORLD);
             MPI_Send(wins_chunk, possible_action_num, MPI_INT, 0, 34, MPI_COMM_WORLD);
@@ -151,7 +158,6 @@ int main(int argc, char *argv[]) {
 
             free(wins_chunk);
             free(visits_chunk);
-            printf("slave %d end! \n", rank);
             
 
         }
